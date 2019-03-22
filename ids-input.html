@@ -1,0 +1,130 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="ids-input">
+  <template>
+    <style>
+      :host {
+        display: block;
+        font-size: 10px;
+      }
+
+      :host b {
+        color: rgb(219, 7, 7);
+      }
+
+      :host([valid]) b {
+        color: rgb(1, 100, 5);
+      }
+
+      label,
+      p {
+        top: 16px;
+        left: 0;
+        font-size: 16px;
+        color: #9098A9;
+        font-weight: 500;
+        transform-origin: 0 0;
+        transition: all .2s ease;
+      }
+
+      input {
+        -webkit-appearance: none;
+        width: 100%;
+        border: 0;
+        font-family: inherit;
+        padding: 10mpx 0;
+        font-size: 16px;
+        border-bottom: 1px solid navy;
+        background: none;
+        border-radius: 0;
+      }
+    </style>
+    <label for="[[title]]">[[title]]
+      <input type="[[type]]" name="[[name]]" id="[[name]]" value="{{value::input}}" on-change="validar">
+      <b valid>
+        <iron-icon icon="[[icono]]"></iron-icon>{{setCustomValidity}}
+      </b>
+    </label>
+  </template>
+
+  <script>
+    /**
+     * `ids-input`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class IdsInput extends Polymer.Element {
+      static get is() {
+        return 'ids-input';
+      }
+      static get properties() {
+        return {
+          type: {
+            type: String,
+          },
+          title: {
+            type: String,
+          },
+          name: {
+            type: String,
+
+          },
+          setCustomValidity: {
+            type: String,
+            value: ` es requerido.`,
+            reflectToAttribute: true
+          },
+          valid: {
+            type: Boolean,
+            notify: true,
+            reflectToAttribute: true,
+            value: false
+          },
+          icono: {
+            type: String,
+            value: "icons:clear"
+          },
+          value: {
+            type: String,
+            reflectToAttribute: true,
+          },
+        }
+      }
+
+      constructor() {
+        super();
+      }
+
+      validar() {
+
+        let element = this.value;
+        if (element == '') {
+          this.setCustomValidity = `${this.title} es requerido.`;
+          this.valid = false;
+          this.icono = 'icons:clear';
+        } else {
+          this.setCustomValidity = '';
+          this.valid = true;
+          this.icono = 'icons:check';
+        }
+
+        let action = this.dispatchEvent(new CustomEvent('onChangeInput', {
+          detail: {
+            name: this.name,
+            value: element,
+            valid: this.valid
+          },
+          bubbles: true,
+          composed: true
+        }));
+      }
+    }
+
+    window.customElements.define(IdsInput.is, IdsInput);
+  </script>
+</dom-module>
